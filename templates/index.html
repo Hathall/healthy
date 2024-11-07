@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العناصر الأساسية في جسم الإنسان</title>
+    <!-- ربط ملف CSS -->
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <!-- تنبيه أعلى الصفحة -->
+    <div class="alert">
+        تنبيه: يجب سؤال الطبيب لتأكيد المعلومات أدناه
+    </div>
+
+    <h1>العناصر الأساسية في جسم الإنسان</h1>
+    <div id="elements-container">
+        {% for element in elements %}
+        <div class="element" onclick="showElementDetails('{{ element.name }}')">
+    {{ element.name }}
+    </div>
+        {% endfor %}
+    </div>
+
+    <!-- النافذة المنبثقة -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-description"></p>
+        </div>
+    </div>
+
+    <script>
+        function showElementDetails(name) {
+            fetch(`/element/${name}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('modal-title').innerText = data.name;
+                    document.getElementById('modal-description').innerText = data.description;
+                    document.getElementById('modal').style.display = 'flex';
+                }
+            });
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // لإغلاق النافذة عند النقر خارجها
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('modal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
